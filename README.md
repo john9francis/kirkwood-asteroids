@@ -8,3 +8,5 @@ Leapfrog method (to conserve energy)
 
 # Process
 - [ ] Model a simple orbit using leapfrog method
+- [ ] Add a trajectory calculator class for leapfrog method, set it up like the pendulum class. 
+- [ ] Move things to np arrays instead of pygame vector2s...
