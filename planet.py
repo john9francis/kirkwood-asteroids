@@ -16,6 +16,12 @@ class Planet:
   def __init__(self) -> None:
     pass
 
+  def set_pos(self, newPos: Vector2):
+    self.pos = newPos
+
+  def get_total_force(self):
+    return self.total_force
+
 
   def add_external_force(self, other_pos:Vector2, other_mass:float) -> None:
     '''
