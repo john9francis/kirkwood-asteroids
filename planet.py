@@ -1,29 +1,31 @@
-from pygame import Vector2
+import numpy as np
 
 class Planet:
-  '''extends stationary planet but adds movement'''
+  '''Moveable planet object'''
 
   # Constants
-  G = 6.6743 * 10**(-11) # m^3 kg^-1 s^-2
+  G = 6.6743 * 10**(-11)  # m^3 kg^-1 s^-2
 
   # member variables
-  mass = 1
-  pos = Vector2(0,0)
+  mass = 2.4e23
+  pos = np.array([0, 0])
 
   # changeable variables
-  total_force = Vector2(0,0)
+  total_force = np.array([0, 0])
 
   def __init__(self) -> None:
     pass
 
-  def set_pos(self, newPos: Vector2):
+
+  def set_pos(self, newPos: np.ndarray):
     self.pos = newPos
 
   def get_total_force(self):
     return self.total_force
 
 
-  def add_external_force(self, other_pos:Vector2, other_mass:float) -> None:
+
+  def add_external_force(self, other_pos: np.ndarray, other_mass: float) -> None:
     '''
     Takes in another planet's position and mass,
     and calculates the force on this planet based on that.
@@ -32,21 +34,24 @@ class Planet:
 
     # first, get the force as a scalar
     r = self.find_r(other_pos)
-    r_mag = r.length()
+    r_mag = np.linalg.norm(r)
     force = self.gravitational_force(other_mass, r_mag)
 
     # second, add the force to the total force variable
-    direction = r.normalize()
-    self.total_force += direction * force
-    pass
+    direction = r / r_mag
+    new_force = direction * force
 
-
+    # have to reset total force this way because
+    # np can't do the += thing for some reason
+    new_total_force = new_force + self.total_force
+    self.total_force = new_total_force
 
   def reset_external_forces(self):
-    self.total_force = Vector2(0,0)
+    self.total_force = np.array([0, 0])
 
 
-  def gravitational_force(self, m_other:float, r_magnitude:float)->float:
+
+  def gravitational_force(self, m_other: float, r_magnitude: float) -> float:
     '''
     Calculates the gravitational force scalar 
     based on the equation:
@@ -54,13 +59,13 @@ class Planet:
     returns F/m so can be used as acceleration.
     '''
     return self.G * m_other / (r_magnitude**2)
-  
-  
-  def find_r(self, pos_other:Vector2) -> Vector2:
+
+
+
+  def find_r(self, pos_other: np.ndarray) -> np.ndarray:
     '''
     Takes in a pos vector of the other object
     and returns a vector FROM this object TO the other
     '''
     return pos_other - self.pos
 
-  pass
