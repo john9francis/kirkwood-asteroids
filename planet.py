@@ -52,11 +52,18 @@ class Planet:
     note: planet_pos_mass_list is a list of lists of the form:
     [planet_position, planet_mass].
     '''
+
     self.reset_external_forces()
     for sub_list in planet_pos_mass_list:
+
       pos = sub_list[0]
       mass = sub_list[1]
-      self.add_external_force(pos, mass)
+
+      # make sure it's not our own planet
+      if np.all(pos == self.position_list[-1]):
+        return
+      else:
+        self.add_external_force(pos, mass)
 
     pass
 
