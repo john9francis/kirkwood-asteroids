@@ -35,7 +35,8 @@ class Planet:
     # first, get the force as a scalar
     r = self.find_r(other_pos)
     r_mag = np.linalg.norm(r)
-    force = self.gravitational_force(other_mass, r_mag)
+    #force = self.gravitational_force(other_mass, r_mag)
+    force = self.AU_force(r_mag)
 
     # second, add the force to the total force variable
     direction = r / r_mag
@@ -45,6 +46,7 @@ class Planet:
     # np can't do the += thing for some reason
     new_total_force = new_force + self.total_force
     self.total_force = new_total_force
+
 
   def reset_external_forces(self):
     self.total_force = np.array([0, 0])
@@ -60,6 +62,9 @@ class Planet:
     '''
     return self.G * m_other / (r_magnitude**2)
 
+
+  def AU_force(self, r_magnitude):
+    return 4 * np.pi**2 /(r_magnitude**2)
 
 
   def find_r(self, pos_other: np.ndarray) -> np.ndarray:

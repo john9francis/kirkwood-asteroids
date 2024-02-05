@@ -12,25 +12,16 @@ def main():
   p = Planet()
 
   # Initial conditions
-  dt = 0.1
-  r_initial = np.array([103000000, 0])
-  v_initial = np.array([1, 1])
+  dt = 0.002
+  r_initial = np.array([1, 0])
+  v_initial = np.array([0, 2*np.pi])
   t = [0]
   r = [r_initial]
   v = [v_initial]
 
-  # set the planet's force values
-  #p.set_pos(r[-1])
-  #p.reset_external_forces()
-  #p.add_external_force(sun_pos, sun_mass)
 
-  # start with a little euler's method to fill the h + .5 value
-  #v.append(v[-1] + p.get_total_force() * .5 * dt)
-  #r.append(r[-1] + v[-1] * 0.5 * dt)
-  #t.append(t[-1] + 0.5 * dt)
-
-  # now we have 2 data points, we start leap frogging
-  while t[-1] < 100:
+  # start leap frogging
+  while t[-1] < .9:
 
     # reset the planet to get the new force in there
     p.set_pos(r[-1])
