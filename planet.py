@@ -10,6 +10,7 @@ class Planet:
   mass = 2.4e23
   position_list = []
   velocity_list = []
+  name = ""
 
   # changeable variables
   total_force = np.array([0, 0])
@@ -18,6 +19,12 @@ class Planet:
 
   def __init__(self) -> None:
     pass
+
+  def set_name(self, new_name):
+    self.name = new_name
+
+  def get_name(self):
+    return self.name
 
   def add_to_position_list(self, new_pos):
     self.position_list.append(new_pos)

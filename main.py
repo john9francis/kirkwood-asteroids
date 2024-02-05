@@ -13,25 +13,29 @@ def main():
   jupiter.set_mass(1.9e27)
   jupiter.add_to_position_list(np.array([5.2, 0]))
   jupiter.add_to_velocity_list(np.array([0, 2.755]))
+  jupiter.set_name("Jupiter")
 
   # initialize our 2/1 gap asteriods
   asteriod1 = Planet()
   asteriod1.set_mass(1e10)
   asteriod1.add_to_position_list(np.array([3.0, 0]))
   asteriod1.add_to_velocity_list(np.array([0, 3.628]))
+  asteriod1.set_name("Asteriod 1")
 
 
 
   # put all our planets in a list to update later
-  planet_list = [jupiter]
+  planet_list = [jupiter, asteriod1]
 
 
   # Initial conditions
   t = 0
   dt = 0.02
-  simulation_time = 15
+  simulation_time = 2
   
   planet_pos_mass_list = []
+
+  # FUNCTIONS
 
   def reset_planet_pos_mass_list():
     planet_pos_mass_list.clear()
@@ -39,50 +43,49 @@ def main():
     for p in planet_list:
       planet_pos_mass_list.append(p.get_pos_mass_list())
 
+  
+  def first_half_leapfrog(planet: Planet):
+    # reset the planet to get the new force in there
+    planet.update_force_from_planets(planet_pos_mass_list)
+
+    # acceleration is the total force
+    a = planet.get_total_force()
+
+    v_half = planet.get_previous_velocity() + a * .5 * dt
+    new_r = planet.get_previous_position() + v_half * dt
+
+    # store v_half
+    planet.store_v_half(v_half)
+
+    # add to pos list
+    planet.add_to_position_list(new_r)
+    pass
+
+
+  def second_half_leapfrog(planet: Planet):
+    # reset the planet to get the new force in there
+    planet.update_force_from_planets(planet_pos_mass_list)
+
+    # acceleration is the total force
+    a = planet.get_total_force()
+
+    new_v = planet.get_v_half() + a * .5 * dt
+
+    # add variables to the lists
+    planet.add_to_velocity_list(new_v)
+    pass
+
   # start leap frogging
   while t < simulation_time:
 
-    reset_planet_pos_mass_list()
-
-    # ===================================================
-    # FIRST HALF
-    # ===================================================
     for p in planet_list:
-      # reset the planet to get the new force in there
-      p.update_force_from_planets(planet_pos_mass_list)
+      print(f"{p.get_name()}, position: {p.get_previous_position()}")
 
-      # acceleration is the total force
-      a = p.get_total_force()
+      first_half_leapfrog(p)
+      reset_planet_pos_mass_list()
+      second_half_leapfrog(p)
+      reset_planet_pos_mass_list()
 
-      v_half = p.get_previous_velocity() + a * .5 * dt
-      new_r = p.get_previous_position() + v_half * dt
-
-      # store v_half
-      p.store_v_half(v_half)
-
-      # add to pos list
-      p.add_to_position_list(new_r)
-
-
-
-    # reset pos mass list
-    reset_planet_pos_mass_list()
-    
-    # ===================================================
-    # SECOND HALF
-    # ===================================================
-
-    for p in planet_list:
-      # reset the planet to get the new force in there
-      p.update_force_from_planets(planet_pos_mass_list)
-
-      # acceleration is the total force
-      a = p.get_total_force()
-
-      new_v = p.get_v_half() + a * .5 * dt
-
-      # add variables to the lists
-      p.add_to_velocity_list(new_v)
 
 
     # add to time
