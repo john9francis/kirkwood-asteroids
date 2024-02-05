@@ -8,24 +8,64 @@ class Planet:
 
   # member variables
   mass = 2.4e23
-  pos = np.array([0, 0])
+  position_list = []
+  velocity_list = []
 
   # changeable variables
   total_force = np.array([0, 0])
+  v_half = 0.0
+
 
   def __init__(self) -> None:
     pass
 
+  def add_to_position_list(self, new_pos):
+    self.position_list.append(new_pos)
 
-  def set_pos(self, newPos: np.ndarray):
-    self.pos = newPos
+  def add_to_velocity_list(self, new_vel):
+    self.velocity_list.append(new_vel)
+
+  def get_position_list(self):
+    return self.position_list
+  
+  def get_velocity_list(self):
+    return self.velocity_list
+  
+  def get_previous_position(self):
+    return self.position_list[-1]
+  
+  def get_previous_velocity(self):
+    return self.velocity_list[-1]
 
   def set_mass(self, new_mass):
     self.mass = new_mass
 
   def get_total_force(self):
     return self.total_force
+  
+  def get_pos_mass_list(self):
+    return [self.position_list[-1], self.mass]
+  
 
+  def update_force_from_planets(self, planet_pos_mass_list):
+    '''
+    note: planet_pos_mass_list is a list of lists of the form:
+    [planet_position, planet_mass].
+    '''
+    self.reset_external_forces()
+    for sub_list in planet_pos_mass_list:
+      pos = sub_list[0]
+      mass = sub_list[1]
+      self.add_external_force(pos, mass)
+
+    pass
+
+
+  def store_v_half(self, v_half):
+    self.v_half = v_half
+
+  def get_v_half(self):
+    return self.v_half
 
 
   def add_external_force(self, other_pos: np.ndarray, other_mass: float) -> None:
@@ -75,5 +115,5 @@ class Planet:
     Takes in a pos vector of the other object
     and returns a vector FROM this object TO the other
     '''
-    return pos_other - self.pos
+    return pos_other - self.position_list[-1]
 

@@ -20,44 +20,56 @@ def main():
   dt = 0.02
   r_initial = np.array([radius, 0])
   v_initial = np.array([0, tangential_velocity])
-  t = [0]
-  r = [r_initial]
-  v = [v_initial]
+  t = 0
+  jupiter.add_to_position_list(r_initial)
+  jupiter.add_to_velocity_list(v_initial)
 
 
   # start leap frogging
-  while t[-1] < 15:
+  while t < 15:
 
+    # ===================================================
+    # FIRST HALF
+    # ===================================================
     # reset the planet to get the new force in there
-    jupiter.set_pos(r[-1])
-    jupiter.reset_external_forces()
-    jupiter.add_external_force(sun_pos, sun_mass)
+    jupiter.update_force_from_planets([[sun_pos, sun_mass]])
 
     # acceleration is the total force
     a = jupiter.get_total_force()
 
-    v_half = v[-1] + a * .5 * dt
+    v_half = jupiter.get_previous_velocity() + a * .5 * dt
+    new_r = jupiter.get_previous_position() + v_half * dt
 
-    new_r = r[-1] + v_half * dt
+    # store v_half
+    jupiter.store_v_half(v_half)
+
+    # add to pos list
+    jupiter.add_to_position_list(new_r)
+
+
+    # ===================================================
+    # SECOND HALF
+    # ===================================================
 
     # reset the planet to get the new force in there
-    jupiter.set_pos(r[-1])
-    jupiter.reset_external_forces()
-    jupiter.add_external_force(sun_pos, sun_mass)
+    jupiter.update_force_from_planets([[sun_pos, sun_mass]])
 
     # acceleration is the total force
     a = jupiter.get_total_force()
 
-    new_v = v_half + a * .5 * dt
+    new_v = jupiter.get_v_half() + a * .5 * dt
 
     # add variables to the lists
-    t.append(t[-1] + dt)
-    v.append(new_v)
-    r.append(new_r)
+    jupiter.add_to_velocity_list(new_v)
+
+
+    # add to time
+    t += dt
 
   # now plot
-  for i in range(len(r)):
-    plt.plot(r[i][0], r[i][1], '.')
+  jupiter_positions = jupiter.get_position_list()
+  for i in range(len(jupiter_positions)):
+    plt.plot(jupiter_positions[i][0], jupiter_positions[i][1], '.')
 
   plt.show()
 
