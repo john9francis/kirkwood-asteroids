@@ -20,6 +20,9 @@ class Planet:
   def set_pos(self, newPos: np.ndarray):
     self.pos = newPos
 
+  def set_mass(self, new_mass):
+    self.mass = new_mass
+
   def get_total_force(self):
     return self.total_force
 
