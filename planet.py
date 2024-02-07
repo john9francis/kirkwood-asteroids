@@ -67,10 +67,7 @@ class Planet:
       mass = sub_list[1]
 
       # make sure it's not our own planet
-      if np.all(pos == self.position_list[-1]):
-        return
-      else:
-        self.add_external_force(pos, mass)
+      self.add_external_force(pos, mass)
 
     pass
 
@@ -91,7 +88,7 @@ class Planet:
 
     # first, get the force as a scalar
     r = self.find_r(other_pos)
-    r_mag = np.linalg.norm(r)
+    r_mag = (r[0]**2 + r[1]**2)**.5
     #force = self.gravitational_force(other_mass, r_mag)
     force = self.AU_force(r_mag)
 
@@ -129,5 +126,5 @@ class Planet:
     Takes in a pos vector of the other object
     and returns a vector FROM this object TO the other
     '''
-    return pos_other - self.position_list[-1]
+    return - pos_other + self.position_list[-1]
 

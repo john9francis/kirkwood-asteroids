@@ -8,6 +8,9 @@ def main():
   sun_mass = 2e30
   sun_pos = np.array([0, 0])
 
+  jupiter_mass = 1.9e27
+  jupiter_pos = np.array([0, 5.2])
+
   # initialize jupiter
   jupiter = Planet()
   jupiter.set_mass(1.9e27)
@@ -25,18 +28,21 @@ def main():
 
 
   # put all our planets in a list to update later
-  planet_list = [jupiter, asteriod1]
+  planet_list = [asteriod1]
 
 
   # Initial conditions
   t = 0
   dt = 0.02
-  simulation_time = 2
+  simulation_time = 5
   
   # this list holds the all the planets'
   # positions and masses, which we will use
   # to update each planet's force later. 
-  planet_pos_mass_list = []
+  planet_pos_mass_list = [
+    [sun_pos, sun_mass],
+    [jupiter_pos, jupiter_mass]
+  ]
 
   # FUNCTIONS
 
@@ -97,13 +103,11 @@ def main():
     # loop through all the planets and leapfrog with them
     for p in planet_list:
       # debug print
-      print(f"{p.get_name()}, position: {p.get_previous_position()}")
+      #print(f"{p.get_name()}, position: {p.get_previous_position()}")
 
       # perform leap frog method with this planet
       first_half_leapfrog(p)
-      reset_planet_pos_mass_list()
       second_half_leapfrog(p)
-      reset_planet_pos_mass_list()
 
 
 
